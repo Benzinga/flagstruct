@@ -1,4 +1,4 @@
-# flagstruct
+# flagstruct [![Build Status](http://54.84.4.72:8000/api/badges/Benzinga/flagstruct/status.svg)](http://54.84.4.72:8000/Benzinga/flagstruct)
 `flagstruct` is (another) library for parsing command line flags into structs.
 Although packages named `flagstruct` already exist, this pattern emerged
 coincidentally (without checking to see if it existed prior) in some projects,
