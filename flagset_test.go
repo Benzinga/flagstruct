@@ -178,6 +178,100 @@ func TestBadTypes(t *testing.T) {
 	Struct(&conf)
 }
 
+func TestEnv(t *testing.T) {
+	conf := struct {
+		Ignored  bool
+		NotFound bool `env:"NON_EXISTENT"`
+		EnvTest  bool `env:"ENV_TEST"`
+	}{}
+
+	os.Setenv("ENV_TEST", "True")
+
+	CommandLine = NewFlagSet("program", flag.PanicOnError)
+	CommandLine.Struct(&conf)
+	CommandLine.ParseEnv()
+
+	if conf.EnvTest != true {
+		t.Error("expected EnvTest to be true")
+	}
+
+	os.Setenv("ENV_TEST", "0")
+
+	CommandLine.ParseEnv()
+
+	if conf.EnvTest != false {
+		t.Error("expected EnvTest to be false")
+	}
+}
+
+func TestBadEnv(t *testing.T) {
+	conf := struct {
+		TestInt16 int16 `env:"TEST_INT16"`
+	}{}
+
+	CommandLine = NewFlagSet("program", flag.ContinueOnError)
+	err := Struct(&conf)
+	if err == nil || err.Error() != "unhandled flag type %!t(int16=0)" {
+		t.Error("unexpected error", err)
+	}
+
+	err = ParseStruct(&conf)
+	if err == nil || err.Error() != "unhandled flag type %!t(int16=0)" {
+		t.Error("unexpected error", err)
+	}
+
+	defer func() {
+		r := recover()
+		if r == nil {
+			t.Error("expected panic did not occur")
+		}
+		if r.(error).Error() != "unhandled flag type %!t(int16=0)" {
+			t.Error("wrong error", r.(error).Error())
+		}
+	}()
+	CommandLine = NewFlagSet("program", flag.PanicOnError)
+	Struct(&conf)
+}
+
+func TestBadEnvParse(t *testing.T) {
+	conf := struct {
+		EnvTest bool `env:"ENV_TEST"`
+	}{}
+
+	os.Setenv("ENV_TEST", "Invalid")
+
+	CommandLine = NewFlagSet("program", flag.ContinueOnError)
+	CommandLine.Struct(&conf)
+	err := CommandLine.ParseEnv()
+
+	if err == nil {
+		t.Fatal("expected err to not be nil")
+	}
+
+	CommandLine = NewFlagSet("program", flag.ExitOnError)
+	Struct(&conf)
+	exitcode := 0
+	exit = func(code int) { exitcode = code }
+	err = ParseEnv()
+
+	if exitcode != 2 {
+		t.Errorf("exited with code %v, expected %v", exitcode, 2)
+	}
+
+	CommandLine = NewFlagSet("program", flag.PanicOnError)
+	Struct(&conf)
+	defer func() {
+		r := recover()
+		if r == nil {
+			t.Error("expected panic did not occur")
+		}
+		if r.(error).Error() != `strconv.ParseBool: parsing "Invalid": invalid syntax` {
+			t.Error("wrong error", r.(error).Error())
+		}
+	}()
+	ParseEnv()
+}
+
 func TestOut(t *testing.T) {
 	s := NewFlagSet("program", flag.ContinueOnError)
 	if s.out() != os.Stderr {

@@ -5,8 +5,10 @@ import (
 	"os"
 )
 
+var exit = os.Exit
+
 // CommandLine is the default set of command-line flags, parsed from os.Args.
-var CommandLine = &FlagSet{flag.CommandLine, os.Args[0], flag.ExitOnError, nil}
+var CommandLine = &FlagSet{flag.CommandLine, os.Args[0], flag.ExitOnError, nil, map[string]Value{}}
 
 // MakeUsage creates a usage function you can set to flag.Usage.
 // For example, you can do this:
@@ -35,6 +37,11 @@ func Parse() error {
 // ParseStruct parses configuration flags based on the struct passed to `conf`.
 func ParseStruct(conf interface{}) error {
 	return CommandLine.ParseStruct(conf, os.Args[1:])
+}
+
+// ParseEnv parses the environment flags in the structure.
+func ParseEnv() error {
+	return CommandLine.ParseEnv()
 }
 
 // PrintStruct prints configuration flags based on the struct passed to `conf`.
