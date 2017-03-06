@@ -12,6 +12,7 @@ and I decided to simply merge the best parts into one library.
   - A useful amount of interoperability with `flag`, allowing you to mix code
     that uses both.
   - Support for FlagSet.
+  - Optionally supports environment variable parsing.
 
 ## Usage
 A quick example follows:
@@ -25,17 +26,25 @@ import (
 )
 
 var conf = struct {
-    Compress bool   `flag:"z" usage:"whether or not to use compression"`
+    Compress bool   `flag:"z" usage:"whether or not to use compression" env:"COMPRESS"`
     OutputFn string `flag:"out" usage:"output ~filename~"`
 }{
     Compress: true,
 }
 
 func main() {
-    // Setup enhanced usage help
+    // Setup enhanced usage help.
+    // Note: this will hide flags not in the struct.
     flag.Usage = flagstruct.MakeStructUsage(&conf)
 
+    // Set up flags based on structure.
+	flagstruct.Struct(&conf)
+
+    // Parse environment (optional.)
+    // You can do this after flags to make env take precedence above flags.
+	flagstruct.ParseEnv()
+
     // Parse flags.
-    flagstruct.ParseStruct(&conf)
+	flagstruct.Parse()
 }
 ```
