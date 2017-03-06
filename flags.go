@@ -1,3 +1,5 @@
+// Package flagstruct is a simple package that allows you to express flag and
+// environment variable based configuration using structs and struct tagging.
 package flagstruct
 
 import (
@@ -17,9 +19,8 @@ func MakeUsage() func() {
 	return CommandLine.MakeUsage()
 }
 
-// MakeStructUsage creates a usage function from a struct that can be set to flag.Usage.
-// For example, you can do this:
-//     flag.Usage = flagstruct.MakeStructUsage(&Config)
+// MakeStructUsage creates a usage function from a struct that can be set to
+// flag.Usage.
 func MakeStructUsage(conf interface{}) func() {
 	return CommandLine.MakeStructUsage(conf)
 }
