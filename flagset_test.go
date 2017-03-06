@@ -252,7 +252,7 @@ func TestBadEnvParse(t *testing.T) {
 	Struct(&conf)
 	exitcode := 0
 	exit = func(code int) { exitcode = code }
-	err = ParseEnv()
+	ParseEnv()
 
 	if exitcode != 2 {
 		t.Errorf("exited with code %v, expected %v", exitcode, 2)

@@ -95,7 +95,7 @@ func (s *FlagSet) PrintStruct(conf interface{}) {
 	for i, l := 0, t.NumField(); i < l; i++ {
 		ft, fv := t.Field(i), v.Field(i)
 
-		// _ can be used to seperate sections.
+		// _ can be used to separate sections.
 		if ft.Name == "_" {
 			fmt.Fprint(s.out(), "\n")
 			continue
