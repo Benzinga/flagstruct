@@ -1,4 +1,4 @@
-# flagstruct [![Build Status](https://travis-ci.org/Benzinga/flagstruct.svg?branch=master)](https://travis-ci.org/Benzinga/flagstruct)
+# flagstruct [![Build Status](https://travis-ci.org/Benzinga/flagstruct.svg?branch=master)](https://travis-ci.org/Benzinga/flagstruct) [![Go Report Card](https://goreportcard.com/badge/github.com/Benzinga/flagstruct)](https://goreportcard.com/report/github.com/Benzinga/flagstruct) [![codecov](https://codecov.io/gh/Benzinga/flagstruct/branch/master/graph/badge.svg)](https://codecov.io/gh/Benzinga/flagstruct)
 `flagstruct` is (another) library for parsing command line flags into structs.
 Although packages named `flagstruct` already exist, this pattern emerged
 coincidentally (without checking to see if it existed prior) in some projects,
