@@ -1,18 +1,20 @@
 # flagstruct [![Build Status](https://travis-ci.org/Benzinga/flagstruct.svg?branch=master)](https://travis-ci.org/Benzinga/flagstruct) [![Go Report Card](https://goreportcard.com/badge/github.com/Benzinga/flagstruct)](https://goreportcard.com/report/github.com/Benzinga/flagstruct) [![codecov](https://codecov.io/gh/Benzinga/flagstruct/branch/master/graph/badge.svg)](https://codecov.io/gh/Benzinga/flagstruct) [![GoDoc](https://godoc.org/github.com/Benzinga/flagstruct?status.svg)](https://godoc.org/github.com/Benzinga/flagstruct)
-`flagstruct` is (another) library for parsing command line flags into structs.
+`flagstruct` is another library for parsing command line flags into structs.
 Although packages named `flagstruct` already exist, this pattern emerged
-coincidentally (without checking to see if it existed prior) in some projects,
-and I decided to simply merge the best parts into one library.
+coincidentally in some of our projects, and I decided to simply merge the
+best parts into one library.
 
 `flagstruct` has a few neat advantages:
 
-  - Uses values as defaults; no need for strings.
-  - Supports easily pretty-printing a structure
-  - Supports custom `flag.Value` types in structures
-  - A useful amount of interoperability with `flag`, allowing you to mix code
-    that uses both.
-  - Support for FlagSet.
-  - Optionally supports environment variable parsing.
+  - Uses values as defaults; no need to encode these as struct tags.
+  - Supports generating usage data with groups and specified ordering.
+    To use grouping, simply use an unnamed `struct{}`-typed member as a
+    separator.
+  - Supports custom `flag.Value` types in structures, along with the built-in
+    `flag.Value` types.
+  - Implements FlagSets akin to Go's `flag.FlagSet`.
+  - Implements environment variables through `env` flag.
+  - Boolean special case is handled identically to Go's `flag` package.
 
 ## Usage
 A quick example follows:
