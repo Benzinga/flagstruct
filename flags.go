@@ -1,5 +1,17 @@
 // Package flagstruct is a simple package that allows you to express flag and
 // environment variable based configuration using structs and struct tagging.
+//
+// Structures
+//
+// flagstruct works on arbitrary structures with struct tagging. The following
+// struct tags are supported:
+//
+//  - "flag": Maps the struct member to a command line flag.
+//  - "env": Maps the struct member to an environment variable.
+//  - "usage": Specifies the usage string to use for the flag.
+//
+// Default values are derived from the value of the member in the struct. To
+// see exactly how this works, check out the package example.
 package flagstruct
 
 import (
