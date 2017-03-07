@@ -8,7 +8,7 @@ import (
 
 func TestBoolValue(t *testing.T) {
 	b := false
-	v := (*BoolValue)(&b)
+	v := (*boolValue)(&b)
 
 	if v.Get() != false {
 		t.Error("expected Get to return false")
@@ -30,7 +30,7 @@ func TestBoolValue(t *testing.T) {
 
 func TestIntValue(t *testing.T) {
 	i := 0
-	v := (*IntValue)(&i)
+	v := (*intValue)(&i)
 
 	result := v.Get()
 	if result != 0 {
@@ -55,7 +55,7 @@ func TestIntValue(t *testing.T) {
 
 func TestInt64Value(t *testing.T) {
 	i := int64(0)
-	v := (*Int64Value)(&i)
+	v := (*int64Value)(&i)
 
 	result := v.Get()
 	if result != int64(0) {
@@ -80,7 +80,7 @@ func TestInt64Value(t *testing.T) {
 
 func TestUintValue(t *testing.T) {
 	i := uint(0)
-	v := (*UintValue)(&i)
+	v := (*uintValue)(&i)
 
 	result := v.Get()
 	if result != uint(0) {
@@ -105,7 +105,7 @@ func TestUintValue(t *testing.T) {
 
 func TestUint64Value(t *testing.T) {
 	i := uint64(0)
-	v := (*Uint64Value)(&i)
+	v := (*uint64Value)(&i)
 
 	result := v.Get()
 	if result != uint64(0) {
@@ -130,7 +130,7 @@ func TestUint64Value(t *testing.T) {
 
 func TestStringValue(t *testing.T) {
 	s := "empty"
-	v := (*StringValue)(&s)
+	v := (*stringValue)(&s)
 
 	result := v.Get()
 	if result != "empty" {
@@ -155,7 +155,7 @@ func TestStringValue(t *testing.T) {
 
 func TestFloat64Value(t *testing.T) {
 	f := float64(0.1)
-	v := (*Float64Value)(&f)
+	v := (*float64Value)(&f)
 
 	result := v.Get()
 	if result != float64(0.1) {
@@ -180,7 +180,7 @@ func TestFloat64Value(t *testing.T) {
 
 func TestDurationValue(t *testing.T) {
 	d, _ := time.ParseDuration("1s")
-	v := (*DurationValue)(&d)
+	v := (*durationValue)(&d)
 
 	result := v.Get().(time.Duration)
 	if result.String() != "1s" {
@@ -204,7 +204,7 @@ func TestDurationValue(t *testing.T) {
 }
 
 func TestValueFromPointer(t *testing.T) {
-	_, err := ValueFromPointer(nil)
+	_, err := valueFromPointer(nil)
 	if err == nil {
 		t.Error("expected err to not be nil")
 	} else if err.Error() != "unhandled flag type %!t(<nil>)" {
@@ -213,9 +213,9 @@ func TestValueFromPointer(t *testing.T) {
 
 	// Test support for upstream flag interface implementations
 	b := false
-	fv := flag.Value((*BoolValue)(&b))
+	fv := flag.Value((*boolValue)(&b))
 
-	_, err = ValueFromPointer(fv)
+	_, err = valueFromPointer(fv)
 	if err != nil {
 		t.Error("unexpected error", err)
 	}

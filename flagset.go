@@ -91,7 +91,7 @@ func (s *FlagSet) Struct(conf interface{}) error {
 		key = ft.Tag.Get("env")
 		if key != "" && key != "-" {
 			addr = fv.Addr().Interface()
-			s.env[key], err = ValueFromPointer(addr)
+			s.env[key], err = valueFromPointer(addr)
 			if err != nil {
 				goto HandleErr
 			}
@@ -105,7 +105,7 @@ func (s *FlagSet) Struct(conf interface{}) error {
 		addr = fv.Addr().Interface()
 
 		// Get Value from pointer.
-		val, err = ValueFromPointer(addr)
+		val, err = valueFromPointer(addr)
 
 	HandleErr:
 		if err != nil {
