@@ -67,7 +67,8 @@ func TestStruct(t *testing.T) {
 		t.Error("wrong number of flags", len(m))
 	}
 
-	flagset.Parse([]string{"-test_bool", "-test_duration=1.0s", "-test_custom=23", "-test_string=a.out"})
+	flagset = NewFlagSet("program", flag.ContinueOnError)
+	flagset.Configure(&conf, []string{"-test_bool", "-test_duration=1.0s", "-test_custom=23", "-test_string=a.out"})
 
 	if !conf.TestBool {
 		t.Error("expected boolean flag to be true")
@@ -132,9 +133,9 @@ func TestGlobal(t *testing.T) {
 		t.Error("wrong number of flags", len(m))
 	}
 
-	// Test ParseStruct
+	// Test Configure
 	CommandLine = NewFlagSet("program", flag.ContinueOnError)
-	ParseStruct(&conf)
+	Configure(&conf)
 
 	// Test output
 	buf := bytes.Buffer{}
@@ -160,7 +161,7 @@ func TestBadTypes(t *testing.T) {
 		t.Error("unexpected error", err)
 	}
 
-	err = ParseStruct(&conf)
+	err = Configure(&conf)
 	if err == nil || err.Error() != "unhandled flag type %!t(int16=0)" {
 		t.Error("unexpected error", err)
 	}
@@ -215,7 +216,7 @@ func TestBadEnv(t *testing.T) {
 		t.Error("unexpected error", err)
 	}
 
-	err = ParseStruct(&conf)
+	err = CommandLine.Configure(&conf, []string{})
 	if err == nil || err.Error() != "unhandled flag type %!t(int16=0)" {
 		t.Error("unexpected error", err)
 	}
@@ -243,6 +244,13 @@ func TestBadEnvParse(t *testing.T) {
 	CommandLine = NewFlagSet("program", flag.ContinueOnError)
 	CommandLine.Struct(&conf)
 	err := CommandLine.ParseEnv()
+
+	if err == nil {
+		t.Fatal("expected err to not be nil")
+	}
+
+	CommandLine = NewFlagSet("program", flag.ContinueOnError)
+	CommandLine.Configure(&conf, []string{})
 
 	if err == nil {
 		t.Fatal("expected err to not be nil")
@@ -300,7 +308,7 @@ func TestStructUsage(t *testing.T) {
 
 	buf.Reset()
 
-	MakeUsage()()
+	CommandLine.MakeUsage()()
 	expectedp := "Usage of program:\n  -test_bool\n    \tbool value\n  -test_custom custom\n    \tcustom value\n  -test_str string\n    \t (default \"x\")\n  -test_str2 string\n    \t\n  -x\t (default true)\n"
 	if buf.String() != expectedp {
 		t.Errorf("usage output differs from expected.\nexpected:\n%q\nactual:\n%q\n", expectedp, buf.String())
@@ -308,7 +316,7 @@ func TestStructUsage(t *testing.T) {
 
 	buf.Reset()
 
-	MakeStructUsage(&conf)()
+	CommandLine.MakeStructUsage(&conf)()
 	expectedp = "Usage of program:\n  -x\t (default true)\n  -test_bool\n    \tbool value\n  -test_str string\n    \t (default \"x\")\n  -test_str2 string\n    \t\n\n  -test_custom custom\n    \tcustom value\n"
 	if buf.String() != expectedp {
 		t.Errorf("usage output differs from expected.\nexpected:\n%q\nactual:\n%q\n", expectedp, buf.String())
@@ -317,7 +325,7 @@ func TestStructUsage(t *testing.T) {
 	CommandLine.name = ""
 	buf.Reset()
 
-	MakeUsage()()
+	CommandLine.MakeUsage()()
 	expectedp = "Usage:\n  -test_bool\n    \tbool value\n  -test_custom custom\n    \tcustom value\n  -test_str string\n    \t (default \"x\")\n  -test_str2 string\n    \t\n  -x\t (default true)\n"
 	if buf.String() != expectedp {
 		t.Errorf("usage output differs from expected.\nexpected:\n%q\nactual:\n%q\n", expectedp, buf.String())
@@ -325,7 +333,7 @@ func TestStructUsage(t *testing.T) {
 
 	buf.Reset()
 
-	MakeStructUsage(&conf)()
+	CommandLine.MakeStructUsage(&conf)()
 	expectedp = "Usage:\n  -x\t (default true)\n  -test_bool\n    \tbool value\n  -test_str string\n    \t (default \"x\")\n  -test_str2 string\n    \t\n\n  -test_custom custom\n    \tcustom value\n"
 	if buf.String() != expectedp {
 		t.Errorf("usage output differs from expected.\nexpected:\n%q\nactual:\n%q\n", expectedp, buf.String())

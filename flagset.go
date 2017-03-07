@@ -24,6 +24,27 @@ func NewFlagSet(name string, errorHandling flag.ErrorHandling) *FlagSet {
 	return &FlagSet{flag.NewFlagSet(name, errorHandling), name, errorHandling, nil, map[string]Value{}}
 }
 
+// Configure sets up enhanced usage help, loads a structure, parses environment
+// and parses flags.
+func (s *FlagSet) Configure(conf interface{}, arguments []string) error {
+	err := s.Struct(conf)
+	if err != nil {
+		return err
+	}
+
+	err = s.ParseEnv()
+	if err != nil {
+		return err
+	}
+
+	err = s.Parse(arguments)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // MakeStructUsage creates a usage function from a struct.
 func (s *FlagSet) MakeStructUsage(conf interface{}) func() {
 	// Cache struct usage (otherwise default values change)
@@ -120,16 +141,9 @@ func (s *FlagSet) Struct(conf interface{}) error {
 		s.Var(val.(Value), name, usage)
 	}
 
+	s.Usage = s.MakeStructUsage(conf)
+
 	return nil
-}
-
-// ParseStruct parses configuration flags based on the struct passed to `conf`.
-func (s *FlagSet) ParseStruct(conf interface{}, arguments []string) error {
-	if err := s.Struct(conf); err != nil {
-		return err
-	}
-
-	return s.Parse(arguments)
 }
 
 // ParseEnv parses environment variables.

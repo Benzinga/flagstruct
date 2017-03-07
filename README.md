@@ -35,18 +35,7 @@ var conf = struct {
 }
 
 func main() {
-    // Setup enhanced usage help.
-    // Note: this will hide flags not in the struct.
-    flag.Usage = flagstruct.MakeStructUsage(&conf)
-
-    // Set up flags based on structure.
-	flagstruct.Struct(&conf)
-
-    // Parse environment (optional.)
-    // You can do this after flags to make env take precedence above flags.
-	flagstruct.ParseEnv()
-
-    // Parse flags.
-	flagstruct.Parse()
+    // Parse flags and environment based off of flagstruct.
+    flagstruct.Configure(&conf)
 }
 ```
